@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     const pet = await prisma.pet.create({ data });
 
     return Response.json(pet, { status: 201 });
-  } catch (err) {
+  } catch {
     // No exponemos detalles internos
     return Response.json(
       { error: "Datos inválidos" },

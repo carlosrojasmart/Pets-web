@@ -24,7 +24,22 @@ export default function PetsPage() {
   }
 
   useEffect(() => {
-    loadPets();
+    let cancelled = false;
+
+    async function loadInitialPets() {
+      const res = await fetch("/api/pets");
+      const data = (await res.json()) as Pet[];
+
+      if (!cancelled) {
+        setPets(data);
+      }
+    }
+
+    void loadInitialPets();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function createPet() {
@@ -118,9 +133,7 @@ export default function PetsPage() {
                     <p className="font-medium">
                       {p.name} <span className="text-black/60">({p.species})</span>
                     </p>
-                    <p className="text-sm text-black/60">
-                      Edad: {p.age ?? "—"}
-                    </p>
+                    <p className="text-sm text-black/60">Edad: {p.age ?? "—"}</p>
                   </div>
                   <p className="text-xs text-black/50">
                     {new Date(p.createdAt).toLocaleString()}
